@@ -18,9 +18,8 @@ return contact;
 }
 render() {return (
   <div>
-    <Form/>
+    <Form handleChange={this.handleChange} handleSubmit={this.handleSubmit}/>
   </div>
   )
 }
-
 };
