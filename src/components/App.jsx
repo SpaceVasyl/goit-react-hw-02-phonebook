@@ -1,24 +1,52 @@
 import  { Component } from "react";
-import Form from "./Form/Form";
+import {Form} from "./Form/Form";
+import { Contacts } from "./Contacts/Contacts";
+import { nanoid } from "nanoid";
+import { Search } from "./Search/Search";
 export class App extends Component {
-state = {
-contacts: [],
-name: ''
-}
-handleChange = event => {
-event.preventDefault();
-const asd = event.target.value;
-this.setState({name : asd})
+  state = {
+    contacts: [],
+    filter: '',
+  }
+
+
+addFilterToState = ({target}) => {
+const {value} = target;
+this.setState({filter: value})
 }
 
-handleSubmit = event => {
-event.preventDefault();
-const contact = this.state.name;
-return contact;
+contactFilter = () => {
+const {contacts, filter} = this.state;
+return contacts.filter(
+  contact => contact.name.toLowerCase().includes(filter.toLowerCase())
+)
 }
+takeData = data => {
+data.id = nanoid();
+const {contacts} = this.state
+
+if (contacts.find(contact=> contact.name === data.name)){
+  alert (`${data.name} is already in contacts`);
+  return
+}
+
+this.setState(prevState => ({
+  contacts:[...prevState.contacts, data]
+}))
+
+}
+
+deleteContact = (id) => {
+this.setState(prevState =>({
+  contacts: prevState.contacts.filter(contact=>contact.id !== id)
+}))
+}
+
 render() {return (
   <div>
-    <Form handleChange={this.handleChange} handleSubmit={this.handleSubmit}/>
+    <Form takeData={this.takeData}/>
+    <Search addFilterToState={this.addFilterToState}/>
+    <Contacts contactFilter={this.contactFilter()} deleteContact={this.deleteContact}/>
   </div>
   )
 }
